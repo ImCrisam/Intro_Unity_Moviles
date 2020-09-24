@@ -53,8 +53,24 @@ public class Candy : MonoBehaviour
             }
             else
             {
+                SwapSprinte(oldCandySelected);
                 oldCandySelected.DeselectCandy();
             }
+        }
+
+    }
+
+    private void SwapSprinte(Candy newCandy)
+    {
+
+        if (spriteRenderer.sprite != newCandy.spriteRenderer.sprite)
+        {
+            Sprite tempoSprite = newCandy.spriteRenderer.sprite;
+            newCandy.spriteRenderer.sprite = this.spriteRenderer.sprite;
+            this.spriteRenderer.sprite = tempoSprite;
+            int tempoId = newCandy.id;
+            newCandy.id = this.id;
+            this.id = tempoId;
         }
 
     }
