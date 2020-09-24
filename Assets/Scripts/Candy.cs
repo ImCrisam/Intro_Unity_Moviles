@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Candy : MonoBehaviour
 {
-    public static Color ColorSelected;
+    public Color colorSelected;
     public int id;
-    private static Candy OldCandySelected = null;
+    private static Candy oldCandySelected;
 
-    bool isSelected = false;
+    [SerializeReference] bool isSelected = false;
     SpriteRenderer spriteRenderer;
 
     Vector2[] UpDownLeftRight = new Vector2[]
@@ -18,16 +18,45 @@ public class Candy : MonoBehaviour
         Vector2.left,
         Vector2.right
     };
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
+    }
+
+    private void SelectCandy()
+    {
+        isSelected = true;
+        spriteRenderer.color = colorSelected;
+        oldCandySelected = gameObject.GetComponent<Candy>();
+    }
+    private void DeselectCandy()
+    {
+        isSelected = false;
+        spriteRenderer.color = Color.white;
+        oldCandySelected = null;
+    }
+    private void OnMouseDown()
+    {
+        if (spriteRenderer.sprite == null || ManagerCandies.instance.isShifting)
+        {
+            return;
+        }
+        if (isSelected)
+        {
+            DeselectCandy();
+        }
+        else
+        {
+            if (oldCandySelected == null)
+            {
+                SelectCandy();
+            }
+            else
+            {
+                oldCandySelected.DeselectCandy();
+            }
+        }
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

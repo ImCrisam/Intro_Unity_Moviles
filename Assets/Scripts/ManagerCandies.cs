@@ -11,7 +11,8 @@ public class ManagerCandies : MonoBehaviour
 
     private GameObject[,] candies;
     public bool isShifting { get; set; }
-    // Start is called before the first frame update
+
+    private Candy candySelected;
     void Start()
     {
         if (instance == null)
