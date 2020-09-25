@@ -53,8 +53,19 @@ public class Candy : MonoBehaviour
             }
             else
             {
-                SwapSprinte(oldCandySelected);
-                oldCandySelected.DeselectCandy();
+                if (CanSwipe(oldCandySelected))
+                {
+                    SwapSprinte(oldCandySelected);
+                    oldCandySelected.FindallMatche();
+                    oldCandySelected.DeselectCandy();
+                    FindallMatche();
+                }
+                else
+                {
+                    oldCandySelected.DeselectCandy();
+                    SelectCandy();
+                }
+
             }
         }
 
@@ -75,4 +86,86 @@ public class Candy : MonoBehaviour
 
     }
 
+    private GameObject GetNeighbor(Vector2 direction)
+    {
+        RaycastHit2D rayHit = Physics2D.Raycast(this.transform.position, direction);
+        return rayHit.collider != null ? rayHit.collider.gameObject : null;
+    }
+
+    private List<GameObject> GetAllNeighbor()
+    {
+        List<GameObject> result = new List<GameObject>();
+        foreach (Vector2 v in UpDownLeftRight)
+        {
+            result.Add(GetNeighbor(v));
+        }
+        return result;
+    }
+
+    private bool CanSwipe(Candy candy)
+    {
+        return GetAllNeighbor().Contains(candy.gameObject);
+    }
+
+
+    private List<GameObject> FindMatch(Vector2 direction)
+    {
+        List<GameObject> result = new List<GameObject>();
+
+        RaycastHit2D rayHit = Physics2D.Raycast(this.transform.position, direction);
+        while (rayHit.collider != null &&
+             rayHit.collider.GetComponent<SpriteRenderer>().sprite
+                    == spriteRenderer.sprite)
+        {
+            result.Add(rayHit.collider.gameObject);
+            rayHit = Physics2D.Raycast(rayHit.collider.transform.position, direction);
+
+        }
+
+        return result;
+    }
+
+    private bool ClearMatch(Vector2[] directions)
+    {
+        List<GameObject> matchCandies = new List<GameObject>();
+        foreach (Vector2 direction in directions)
+        {
+            matchCandies.AddRange(FindMatch(direction));
+        }
+
+        if (matchCandies.Count >= ManagerCandies.minToMach)
+        {
+            foreach (GameObject candy in matchCandies)
+            {
+                candy.GetComponent<SpriteRenderer>().sprite = null;
+            }
+
+            return true;
+
+        }
+        else
+        {
+            return false;
+
+        }
+
+    }
+
+    public void FindallMatche()
+    {
+
+        if (spriteRenderer.sprite == null)
+        {
+            return;
+
+        }
+        bool verticalMatch = ClearMatch(new Vector2[2] { Vector2.up, Vector2.down });
+        bool horizontalMatch = ClearMatch(new Vector2[2] { Vector2.right, Vector2.left });
+
+        if (verticalMatch || horizontalMatch)
+        {
+            spriteRenderer.sprite = null;
+
+        }
+    }
 }

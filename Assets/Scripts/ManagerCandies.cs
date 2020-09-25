@@ -8,7 +8,7 @@ public class ManagerCandies : MonoBehaviour
     public List<Sprite> listPreFabs = new List<Sprite>();
     public GameObject currentCandy;
     public int col, row;
-
+    public const int minToMach = 2;
     private GameObject[,] candies;
     public bool isShifting { get; set; }
 
@@ -62,10 +62,10 @@ public class ManagerCandies : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
+    private List<GameObject> FindMach(Vector2 direction)
     {
+        List<GameObject> result = new List<GameObject>();
 
+        return result;
     }
 }
