@@ -59,7 +59,7 @@ public class Candy : MonoBehaviour
                     oldCandySelected.FindallMatche();
                     oldCandySelected.DeselectCandy();
                     FindallMatche();
-
+                    ManagerGIU.instance.Moves--;
 
                 }
                 else

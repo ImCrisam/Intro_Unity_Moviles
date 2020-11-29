@@ -114,6 +114,7 @@ public class ManagerCandies : MonoBehaviour
         }
         for (int k = 0; k < nullCandis; k++)
         {
+            ManagerGIU.instance.Score = ManagerGIU.instance.Score + 10;
             yield return new WaitForSeconds(delay);
             for (int l = 0; l < renderes.Count - 1; l++)
             {
