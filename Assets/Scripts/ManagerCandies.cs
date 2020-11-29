@@ -108,11 +108,33 @@ public class ManagerCandies : MonoBehaviour
             yield return new WaitForSeconds(delay);
             for (int l = 0; l < renderes.Count - 1; l++)
             {
+
                 renderes[l].sprite = renderes[l + 1].sprite;
-                renderes[l + 1].sprite = null;
+
+                renderes[l + 1].sprite = GetNewSprite(k, row - 1);
             }
         }
 
         isShifting = false;
+    }
+
+    private Sprite GetNewSprite(int x, int y)
+    {
+        List<Sprite> possibleCandies = new List<Sprite>(listPreFabs);
+
+        if (x > 0)
+        {
+            possibleCandies.Remove(candies[x - 1, y].GetComponent<SpriteRenderer>().sprite);
+        }
+        if (x > col - 1)
+        {
+            possibleCandies.Remove(candies[x + 1, y].GetComponent<SpriteRenderer>().sprite);
+        }
+        if (y > 0)
+        {
+            possibleCandies.Remove(candies[x, y - 1].GetComponent<SpriteRenderer>().sprite);
+        }
+
+        return possibleCandies[Random.Range(0, possibleCandies.Count)];
     }
 }
