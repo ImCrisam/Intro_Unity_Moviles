@@ -68,4 +68,51 @@ public class ManagerCandies : MonoBehaviour
 
         return result;
     }
+    public IEnumerator FindNullCandi()
+    {
+        for (int x = 0; x < col; x++)
+        {
+            for (int y = 0; y < row; y++)
+            {
+                if (candies[x, y].GetComponent<SpriteRenderer>().sprite == null)
+                {
+                    yield return StartCoroutine(MakeCandisFall(x, y));
+                    break;
+                }
+
+
+            }
+        }
+
+    }
+
+    private IEnumerator MakeCandisFall(int i,
+                                  int j,
+                                  float delay = 0.5f)
+    {
+        isShifting = true;
+        List<SpriteRenderer> renderes = new List<SpriteRenderer>();
+        int nullCandis = 0;
+        for (int y = j; y < row; y++)
+        {
+            SpriteRenderer spriteRenderer = candies[i, y].GetComponent<SpriteRenderer>();
+            if (spriteRenderer.sprite == null)
+            {
+                nullCandis++;
+            }
+            renderes.Add(spriteRenderer);
+
+        }
+        for (int k = 0; k < nullCandis; k++)
+        {
+            yield return new WaitForSeconds(delay);
+            for (int l = 0; l < renderes.Count - 1; l++)
+            {
+                renderes[l].sprite = renderes[l + 1].sprite;
+                renderes[l + 1].sprite = null;
+            }
+        }
+
+        isShifting = false;
+    }
 }

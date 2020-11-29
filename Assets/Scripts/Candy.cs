@@ -59,6 +59,9 @@ public class Candy : MonoBehaviour
                     oldCandySelected.FindallMatche();
                     oldCandySelected.DeselectCandy();
                     FindallMatche();
+
+                    StopCoroutine(ManagerCandies.instance.FindNullCandi());
+                    StartCoroutine(ManagerCandies.instance.FindNullCandi());
                 }
                 else
                 {
