@@ -83,12 +83,21 @@ public class ManagerCandies : MonoBehaviour
 
             }
         }
+        for (int x = 0; x < col; x++)
+        {
+            for (int y = 0; y < row; y++)
+            {
+                candies[x, y].GetComponent<Candy>().FindallMatche();
+            }
+        }
+
+
 
     }
 
     private IEnumerator MakeCandisFall(int i,
                                   int j,
-                                  float delay = 0.5f)
+                                  float delay = 0.3f)
     {
         isShifting = true;
         List<SpriteRenderer> renderes = new List<SpriteRenderer>();

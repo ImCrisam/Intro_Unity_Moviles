@@ -60,8 +60,7 @@ public class Candy : MonoBehaviour
                     oldCandySelected.DeselectCandy();
                     FindallMatche();
 
-                    StopCoroutine(ManagerCandies.instance.FindNullCandi());
-                    StartCoroutine(ManagerCandies.instance.FindNullCandi());
+
                 }
                 else
                 {
@@ -168,6 +167,9 @@ public class Candy : MonoBehaviour
         if (verticalMatch || horizontalMatch)
         {
             spriteRenderer.sprite = null;
+            StopCoroutine(ManagerCandies.instance.FindNullCandi());
+            StartCoroutine(ManagerCandies.instance.FindNullCandi());
+
 
         }
     }
