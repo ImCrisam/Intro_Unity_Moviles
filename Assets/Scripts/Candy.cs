@@ -31,27 +31,29 @@ public class Candy : MonoBehaviour {
         oldCandySelected = null;
     }
     private void OnMouseDown () {
-        if (spriteRenderer.sprite == null || ManagerCandies.instance.isShifting) {
-            return;
-        }
-        if (isSelected) {
-            DeselectCandy ();
-        } else {
-            if (oldCandySelected == null) {
-                SelectCandy ();
+        if (ManagerGIU.instance.inPlay) {
+            if (spriteRenderer.sprite == null || ManagerCandies.instance.isShifting) {
+                return;
+            }
+            if (isSelected) {
+                DeselectCandy ();
             } else {
-                if (CanSwipe (oldCandySelected)) {
-                    SwapSprinte (oldCandySelected);
-                    oldCandySelected.FindallMatche ();
-                    oldCandySelected.DeselectCandy ();
-                    FindallMatche ();
-                    ManagerGIU.instance.Moves--;
-
-                } else {
-                    oldCandySelected.DeselectCandy ();
+                if (oldCandySelected == null) {
                     SelectCandy ();
-                }
+                } else {
+                    if (CanSwipe (oldCandySelected)) {
+                        SwapSprinte (oldCandySelected);
+                        oldCandySelected.FindallMatche ();
+                        oldCandySelected.DeselectCandy ();
+                        FindallMatche ();
+                        ManagerGIU.instance.Moves--;
 
+                    } else {
+                        oldCandySelected.DeselectCandy ();
+                        SelectCandy ();
+                    }
+
+                }
             }
         }
 

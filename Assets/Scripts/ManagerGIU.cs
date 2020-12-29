@@ -16,6 +16,7 @@ public class ManagerGIU : MonoBehaviour
     private int movesMax;
     public int MovesMax { get { return movesMax; } set { movesMax = value > 10 ? 9 : value; } }
 
+    public bool inPlay = false;
     public int Moves
     {
         get { return moves; }
@@ -39,6 +40,7 @@ public class ManagerGIU : MonoBehaviour
     {
         yield return new WaitUntil(() => !ManagerCandies.instance.isShifting);
         yield return new WaitForSeconds(0.5f);
+        inGameOver.GetComponentInChildren<Text>().text = "Score:" + score;
         inGameOver.enabled = true;
         inGame.enabled = false;
         play.enabled = false;
@@ -55,8 +57,6 @@ public class ManagerGIU : MonoBehaviour
             ScoreText.text = "Score:" + score;
         }
     }
-
-
 
     void Start()
     {
@@ -80,16 +80,33 @@ public class ManagerGIU : MonoBehaviour
 
     private void initCanvas()
     {
-        inGame.enabled = true;
+        inGame.enabled = false;
         inGameOver.enabled = false;
-        play.enabled = false;
+        play.enabled = true;
+        inPlay = false;
         MovesMax = 9;
         Moves = 9;
         Score = 0;
 
     }
 
+    public void newGame()
+    {
+        inGameOver.enabled = false;
+        inGame.enabled = true;
+        play.enabled = false;
+        inPlay = true;
 
+        Score = 0;
+    }
 
+    public void quitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 
 }
