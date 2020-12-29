@@ -2,149 +2,127 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManagerCandies : MonoBehaviour
-{
+public class ManagerCandies : MonoBehaviour {
     public static ManagerCandies instance;
-    public List<Sprite> listPreFabs = new List<Sprite>();
+    public List<Sprite> listPreFabs = new List<Sprite> ();
     public GameObject currentCandy;
     public int col, row;
     public const int minToMach = 2;
-    private GameObject[,] candies;
+    private GameObject[, ] candies;
     public bool isShifting { get; set; }
 
     private Candy candySelected;
-    void Start()
-    {
-        if (instance == null)
-        {
+    void Start () {
+        if (instance == null) {
             instance = this;
+        } else {
+            Destroy (gameObject);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
-        Vector2 offSet = currentCandy.GetComponent<BoxCollider2D>().size;
-        init(offSet);
+        Vector2 offSet = currentCandy.GetComponent<BoxCollider2D> ().size;
+        init (offSet);
     }
 
-    private void init(Vector2 offset)
-    {
+    private void init (Vector2 offset) {
         candies = new GameObject[col, row];
         GameObject temporalCandy;
         Sprite temporalSprite;
         float intix = this.transform.position.x;
         float intiy = this.transform.position.y;
         int idx = -1;
-        for (int x = 0; col > x; x++)
-        {
-            for (int y = 0; row > y; y++)
-            {
-                temporalCandy = Instantiate(
-                                currentCandy,
-                                new Vector3(intix + (offset.x * x),
-                                             intiy + (offset.y * y),
-                                             0),
-                                currentCandy.transform.rotation);
-                temporalCandy.name = string.Format("Candy[{0}][{1}]", x, y);
-                do
-                {
-                    idx = Random.Range(0, listPreFabs.Count);
-                } while ((x > 0 && idx == candies[x - 1, y].GetComponent<Candy>().id) ||
-                            (y > 0 && idx == candies[x, y - 1].GetComponent<Candy>().id));
-
+        for (int x = 0; col > x; x++) {
+            for (int y = 0; row > y; y++) {
+                temporalCandy = Instantiate (
+                    currentCandy,
+                    new Vector3 (intix + (offset.x * x),
+                        intiy + (offset.y * y),
+                        0),
+                    currentCandy.transform.rotation);
+                temporalCandy.name = string.Format ("Candy[{0}][{1}]", x, y);
+                do {
+                    idx = Random.Range (0, listPreFabs.Count);
+                } while ((x > 0 && idx == candies[x - 1, y].GetComponent<Candy> ().id) ||
+                    (y > 0 && idx == candies[x, y - 1].GetComponent<Candy> ().id));
 
                 temporalSprite = listPreFabs[idx];
-                temporalCandy.GetComponent<SpriteRenderer>().sprite = temporalSprite;
-                temporalCandy.GetComponent<Candy>().id = idx;
+                temporalCandy.GetComponent<SpriteRenderer> ().sprite = temporalSprite;
+                temporalCandy.GetComponent<Candy> ().id = idx;
                 temporalCandy.transform.parent = this.transform;
                 candies[x, y] = temporalCandy;
             }
         }
     }
 
-    private List<GameObject> FindMach(Vector2 direction)
-    {
-        List<GameObject> result = new List<GameObject>();
+    private List<GameObject> FindMach (Vector2 direction) {
+        List<GameObject> result = new List<GameObject> ();
 
         return result;
     }
-    public IEnumerator FindNullCandi()
-    {
-        for (int x = 0; x < col; x++)
-        {
+    public IEnumerator FindNullCandi () {
+        for (int x = 0; x < col; x++) {
             for (int y = 0; y < row; y++)
+
             {
-                if (candies[x, y].GetComponent<SpriteRenderer>().sprite == null)
-                {
-                    yield return StartCoroutine(MakeCandisFall(x, y));
+
+                if (candies[x, y].GetComponent<SpriteRenderer> ().sprite == null) {
+                    yield return StartCoroutine (MakeCandisFall (x, y));
                     break;
                 }
 
-
             }
         }
-        for (int x = 0; x < col; x++)
-        {
-            for (int y = 0; y < row; y++)
-            {
-                candies[x, y].GetComponent<Candy>().FindallMatche();
+        for (int x = 0; x < col; x++) {
+            for (int y = 0; y < row; y++) {
+                candies[x, y].GetComponent<Candy> ().FindallMatche ();
             }
         }
-
-
 
     }
 
-    private IEnumerator MakeCandisFall(int i,
-                                  int j,
-                                  float delay = 0.3f)
-    {
+    private IEnumerator MakeCandisFall (int i,
+        int j,
+        float delay = 0.03f) {
         isShifting = true;
-        List<SpriteRenderer> renderes = new List<SpriteRenderer>();
+        List<SpriteRenderer> renderes = new List<SpriteRenderer> ();
         int nullCandis = 0;
-        for (int y = j; y < row; y++)
-        {
-            SpriteRenderer spriteRenderer = candies[i, y].GetComponent<SpriteRenderer>();
-            if (spriteRenderer.sprite == null)
-            {
+        for (int y = j; y < row; y++) {
+
+            SpriteRenderer spriteRenderer = candies[i, y].GetComponent<SpriteRenderer> ();
+            if (spriteRenderer.sprite == null) {
                 nullCandis++;
             }
-            renderes.Add(spriteRenderer);
+            renderes.Add (spriteRenderer);
 
         }
-        for (int k = 0; k < nullCandis; k++)
-        {
+        for (int k = 0; k < nullCandis; k++) {
             ManagerGIU.instance.Score = ManagerGIU.instance.Score + 10;
-            yield return new WaitForSeconds(delay);
-            for (int l = 0; l < renderes.Count - 1; l++)
-            {
+            yield return new WaitForSeconds (delay);
+            if (renderes.Count > 1) {
+                for (int l = 0; l < renderes.Count - 1; l++) {
+                    renderes[l].sprite = renderes[l + 1].sprite;
+                    renderes[l + 1].sprite = GetNewSprite (k, row - 1);
+                }
+            } else {
 
-                renderes[l].sprite = renderes[l + 1].sprite;
-
-                renderes[l + 1].sprite = GetNewSprite(k, row - 1);
+                renderes[0].sprite = GetNewSprite (i, j);
             }
         }
 
         isShifting = false;
     }
 
-    private Sprite GetNewSprite(int x, int y)
-    {
-        List<Sprite> possibleCandies = new List<Sprite>(listPreFabs);
+    private Sprite GetNewSprite (int x, int y) {
+        List<Sprite> possibleCandies = new List<Sprite> (listPreFabs);
 
-        if (x > 0)
-        {
-            possibleCandies.Remove(candies[x - 1, y].GetComponent<SpriteRenderer>().sprite);
+        if (x > 0) {
+            possibleCandies.Remove (candies[x - 1, y].GetComponent<SpriteRenderer> ().sprite);
         }
-        if (x > col - 1)
-        {
-            possibleCandies.Remove(candies[x + 1, y].GetComponent<SpriteRenderer>().sprite);
+        if (x > col - 1) {
+            possibleCandies.Remove (candies[x + 1, y].GetComponent<SpriteRenderer> ().sprite);
         }
-        if (y > 0)
-        {
-            possibleCandies.Remove(candies[x, y - 1].GetComponent<SpriteRenderer>().sprite);
+        if (y > 0) {
+            possibleCandies.Remove (candies[x, y - 1].GetComponent<SpriteRenderer> ().sprite);
         }
 
-        return possibleCandies[Random.Range(0, possibleCandies.Count)];
+        return possibleCandies[Random.Range (0, possibleCandies.Count)];
     }
 }

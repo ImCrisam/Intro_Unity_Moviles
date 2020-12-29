@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 220647896}
   - component: {fileID: 220647895}
   m_Layer: 5
-  m_Name: InPlay
+  m_Name: inGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1207,7 +1207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d463a215e69bc364a91b3fff10714162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inplay: {fileID: 220647897}
+  inGame: {fileID: 220647897}
   play: {fileID: 618908511}
   inGameOver: {fileID: 657021252}
   movesText: {fileID: 1888803090}

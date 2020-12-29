@@ -8,7 +8,7 @@ public class ManagerGIU : MonoBehaviour
 {
     public static ManagerGIU instance;
 
-    public Canvas inplay;
+    public Canvas inGame;
     public Canvas play;
     public Canvas inGameOver;
     [SerializeField] private Text movesText;
@@ -24,7 +24,7 @@ public class ManagerGIU : MonoBehaviour
             moves = value;
             if (moves >= 0)
             {
-                movesText.text = "moves" + moves + "/" + movesMax;
+                movesText.text = "Moves: " + moves + "/" + movesMax;
 
             }
             else
@@ -39,6 +39,9 @@ public class ManagerGIU : MonoBehaviour
     {
         yield return new WaitUntil(() => !ManagerCandies.instance.isShifting);
         yield return new WaitForSeconds(0.5f);
+        inGameOver.enabled = true;
+        inGame.enabled = false;
+        play.enabled = false;
     }
 
     [SerializeField] private Text ScoreText;
@@ -77,11 +80,16 @@ public class ManagerGIU : MonoBehaviour
 
     private void initCanvas()
     {
-        inplay.enabled = true;
+        inGame.enabled = true;
         inGameOver.enabled = false;
         play.enabled = false;
+        MovesMax = 9;
+        Moves = 9;
+        Score = 0;
 
     }
+
+
 
 
 }
