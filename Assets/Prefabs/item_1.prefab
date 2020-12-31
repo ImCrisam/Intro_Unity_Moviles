@@ -119,6 +119,8 @@ MonoBehaviour:
   colorSelected: {r: 0.8962264, g: 0.8137589, b: 0.24096651, a: 1}
   id: 0
   isSelected: 0
+  spriteRenderer: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!61 &8187652823048792618
 BoxCollider2D:
   m_ObjectHideFlags: 0

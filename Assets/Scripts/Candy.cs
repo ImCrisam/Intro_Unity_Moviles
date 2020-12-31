@@ -5,10 +5,11 @@ using UnityEngine;
 public class Candy : MonoBehaviour {
     public Color colorSelected;
     public int id;
-    private static Candy oldCandySelected;
+    public static Candy oldCandySelected;
 
     [SerializeReference] bool isSelected = false;
-    SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
+    public Animator animator;
 
     Vector2[] UpDownLeftRight = new Vector2[] {
         Vector2.up,
@@ -18,6 +19,8 @@ public class Candy : MonoBehaviour {
     };
     private void Awake () {
         spriteRenderer = this.GetComponent<SpriteRenderer> ();
+        animator = this.GetComponent<Animator> ();
+        animator.SetBool ("destroy", false);
     }
 
     private void SelectCandy () {
@@ -32,7 +35,7 @@ public class Candy : MonoBehaviour {
     }
     private void OnMouseDown () {
         if (ManagerGIU.instance.inPlay) {
-            if (spriteRenderer.sprite == null || ManagerCandies.instance.isShifting) {
+            if (animator.GetBool ("destroy") || ManagerCandies.instance.isShifting) {
                 return;
             }
             if (isSelected) {
@@ -44,8 +47,8 @@ public class Candy : MonoBehaviour {
                     if (CanSwipe (oldCandySelected)) {
                         SwapSprinte (oldCandySelected);
                         oldCandySelected.FindallMatche ();
-                        oldCandySelected.DeselectCandy ();
                         FindallMatche ();
+                        oldCandySelected.DeselectCandy ();
                         ManagerGIU.instance.Moves--;
 
                     } else {
@@ -67,11 +70,17 @@ public class Candy : MonoBehaviour {
 
         if (spriteRenderer.sprite != newCandy.spriteRenderer.sprite) {
             Sprite tempoSprite = newCandy.spriteRenderer.sprite;
+            RuntimeAnimatorController animatorController = newCandy.animator.runtimeAnimatorController;
+            int id = newCandy.id;
+
             newCandy.spriteRenderer.sprite = this.spriteRenderer.sprite;
-            this.spriteRenderer.sprite = tempoSprite;
-            int tempoId = newCandy.id;
+            newCandy.animator.runtimeAnimatorController = this.animator.runtimeAnimatorController;
             newCandy.id = this.id;
-            this.id = tempoId;
+
+            this.spriteRenderer.sprite = tempoSprite;
+            this.animator.runtimeAnimatorController = animatorController;
+            this.id = id;
+
         }
 
     }
@@ -93,13 +102,13 @@ public class Candy : MonoBehaviour {
         return GetAllNeighbor ().Contains (candy.gameObject);
     }
 
-    private List<GameObject> FindMatch (Vector2 direction) {
+    private List<GameObject> FindMatch (Vector2 direction, Transform position) {
         List<GameObject> result = new List<GameObject> ();
 
-        RaycastHit2D rayHit = Physics2D.Raycast (this.transform.position, direction);
+        RaycastHit2D rayHit = Physics2D.Raycast (position.position, direction);
         while (rayHit.collider != null &&
-            rayHit.collider.GetComponent<SpriteRenderer> ().sprite ==
-            spriteRenderer.sprite) {
+            rayHit.collider.GetComponent<Candy> ().id ==
+            id) {
             result.Add (rayHit.collider.gameObject);
             rayHit = Physics2D.Raycast (rayHit.collider.transform.position, direction);
 
@@ -109,16 +118,29 @@ public class Candy : MonoBehaviour {
     }
 
     private bool ClearMatch (Vector2[] directions) {
-        List<GameObject> matchCandies = new List<GameObject> ();
+        HashSet<GameObject> matchCandies = new HashSet<GameObject> ();
+        List<GameObject> temporalMatchCandies = new List<GameObject> ();
+        List<GameObject> temporal = new List<GameObject> ();
+
         foreach (Vector2 direction in directions) {
-            matchCandies.AddRange (FindMatch (direction));
+            temporalMatchCandies.AddRange (FindMatch (direction, this.GetComponent<Transform> ()));
         }
+        matchCandies.UnionWith (temporalMatchCandies);
 
-        if (matchCandies.Count >= ManagerCandies.minToMach) {
-            foreach (GameObject candy in matchCandies) {
-                candy.GetComponent<SpriteRenderer> ().sprite = null;
+        foreach (GameObject gameObject in temporalMatchCandies) {
+            foreach (Vector2 direction in directions) {
+                temporal.AddRange (FindMatch (direction, gameObject.GetComponent<Transform> ()));
             }
-
+        }
+        temporalMatchCandies = temporal;
+        temporal = new List<GameObject> ();
+        matchCandies.UnionWith (temporalMatchCandies);
+        if (matchCandies.Count >= ManagerCandies.minToMach) {
+        Debug.Log (matchCandies.Count);
+            this.GetComponent<Animator> ().SetBool ("destroy", true);
+            foreach (GameObject candy in matchCandies) {
+                candy.GetComponent<Animator> ().SetBool ("destroy", true);
+            }
             return true;
 
         } else {
@@ -130,18 +152,21 @@ public class Candy : MonoBehaviour {
 
     public void FindallMatche () {
 
-        if (spriteRenderer.sprite == null) {
+        if (this.animator.GetBool ("destroy")) {
             return;
 
         }
-        bool verticalMatch = ClearMatch (new Vector2[2] { Vector2.up, Vector2.down });
-        bool horizontalMatch = ClearMatch (new Vector2[2] { Vector2.right, Vector2.left });
-        if (verticalMatch || horizontalMatch) {
-            spriteRenderer.sprite = null;
+        bool verticalMatch = ClearMatch (new Vector2[] { Vector2.up, Vector2.down, Vector2.right, Vector2.left });
 
-            StopCoroutine (ManagerCandies.instance.FindNullCandi ());
-            StartCoroutine (ManagerCandies.instance.FindNullCandi ());
+        if (verticalMatch) {
+            Invoke ("starFindNullCandies", 1.6f);
 
         }
     }
+
+    public void starFindNullCandies () {
+        StopCoroutine (ManagerCandies.instance.FindNullCandi ());
+        StartCoroutine (ManagerCandies.instance.FindNullCandi ());
+    }
+
 }

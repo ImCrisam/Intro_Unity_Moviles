@@ -84,7 +84,6 @@ public class ManagerGIU : MonoBehaviour
         inGameOver.enabled = false;
         play.enabled = true;
         inPlay = false;
-        MovesMax = 9;
         Moves = 9;
         Score = 0;
 
@@ -96,7 +95,7 @@ public class ManagerGIU : MonoBehaviour
         inGame.enabled = true;
         play.enabled = false;
         inPlay = true;
-
+        Moves = 9;
         Score = 0;
     }
 
