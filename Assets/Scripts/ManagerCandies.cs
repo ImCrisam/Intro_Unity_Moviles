@@ -23,8 +23,25 @@ public class ManagerCandies : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+    }
+    public void newGame()
+    {
+
+        if (this.transform.childCount > 0)
+        {
+            for (int i = 0; i < this.transform.childCount; i++)
+            {
+
+                Destroy(this.transform.GetChild(i).gameObject);
+            }
+        }
         Vector2 offSet = currentCandy.GetComponent<BoxCollider2D>().size;
         init(offSet);
+    }
+    private void destroyGame()
+    {
+
     }
 
     private void init(Vector2 offset)
