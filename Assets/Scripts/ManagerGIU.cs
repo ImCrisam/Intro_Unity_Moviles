@@ -13,8 +13,7 @@ public class ManagerGIU : MonoBehaviour
     public Canvas inGameOver;
     [SerializeField] private Text movesText;
     private int moves;
-    private int movesMax;
-    public int MovesMax { get { return movesMax; } set { movesMax = value > 10 ? 9 : value; } }
+
 
     public bool inPlay = false;
     public int Moves
@@ -22,10 +21,12 @@ public class ManagerGIU : MonoBehaviour
         get { return moves; }
         set
         {
+            Debug.Log("moves: " + value);
+
             moves = value;
             if (moves >= 0)
             {
-                movesText.text = "Moves: " + moves + "/" + movesMax;
+                movesText.text = "Moves: " + moves;
 
             }
             else
@@ -39,7 +40,7 @@ public class ManagerGIU : MonoBehaviour
     private IEnumerator GameOver()
     {
         yield return new WaitUntil(() => !ManagerCandies.instance.isShifting);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2.1f);
         inGameOver.GetComponentInChildren<Text>().text = "Score:" + score;
         inGameOver.enabled = true;
         inGame.enabled = false;
@@ -61,12 +62,8 @@ public class ManagerGIU : MonoBehaviour
     void Start()
     {
         initCanvas();
-        movesText.text = "Moves: " + moves + "/" + movesMax;
-        if (movesMax == 0)
-        {
-            movesMax = 9;
+        movesText.text = "Moves: " + moves;
 
-        }
         if (instance == null)
         {
             instance = this;

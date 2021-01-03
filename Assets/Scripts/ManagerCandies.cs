@@ -110,7 +110,7 @@ public class ManagerCandies : MonoBehaviour
 
     private IEnumerator MakeCandisFall(int i,
         int j,
-        float delay = 0.08f)
+        float delay = 0.3f)
     {
         isShifting = true;
         List<Candy> candiesinFall = new List<Candy>();

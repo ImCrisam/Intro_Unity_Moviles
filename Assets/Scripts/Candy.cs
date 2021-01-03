@@ -59,11 +59,11 @@ public class Candy : MonoBehaviour
                 {
                     if (CanSwipe(oldCandySelected))
                     {
+                        ManagerGIU.instance.Moves--;
                         SwapSprinte(oldCandySelected);
                         oldCandySelected.FindallMatche();
                         FindallMatche();
                         oldCandySelected.DeselectCandy();
-                        ManagerGIU.instance.Moves--;
 
                     }
                     else
@@ -192,12 +192,14 @@ public class Candy : MonoBehaviour
             return;
 
         }
-        bool verticalMatch = ClearMatch(new Vector2[] { Vector2.up, Vector2.down, Vector2.right, Vector2.left });
+        bool isMatch = ClearMatch(new Vector2[] { Vector2.up, Vector2.down, Vector2.right, Vector2.left });
 
-        if (verticalMatch)
+        if (isMatch)
         {
+
+            ManagerGIU.instance.Moves++;
             /* this.GetComponent<Animator>().SetBool("destroy", true); */
-            Invoke("starFindNullCandies", 2.6f);
+            Invoke("starFindNullCandies", 2f);
 
         }
     }
