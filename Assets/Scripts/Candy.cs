@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Candy : MonoBehaviour {
+public class Candy : MonoBehaviour
+{
     public Color colorSelected;
     public int id;
     public static Candy oldCandySelected;
@@ -17,43 +18,58 @@ public class Candy : MonoBehaviour {
         Vector2.left,
         Vector2.right
     };
-    private void Awake () {
-        spriteRenderer = this.GetComponent<SpriteRenderer> ();
-        animator = this.GetComponent<Animator> ();
-        animator.SetBool ("destroy", false);
+    private void Awake()
+    {
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
+        animator = this.GetComponent<Animator>();
+        animator.SetBool("destroy", false);
     }
 
-    private void SelectCandy () {
+    private void SelectCandy()
+    {
         isSelected = true;
         spriteRenderer.color = colorSelected;
-        oldCandySelected = gameObject.GetComponent<Candy> ();
+        oldCandySelected = gameObject.GetComponent<Candy>();
     }
-    private void DeselectCandy () {
+    private void DeselectCandy()
+    {
         isSelected = false;
         spriteRenderer.color = Color.white;
         oldCandySelected = null;
     }
-    private void OnMouseDown () {
-        if (ManagerGIU.instance.inPlay) {
-            if (animator.GetBool ("destroy") || ManagerCandies.instance.isShifting) {
+    private void OnMouseDown()
+    {
+        if (ManagerGIU.instance.inPlay)
+        {
+            if (animator.GetBool("destroy") || ManagerCandies.instance.isShifting)
+            {
                 return;
             }
-            if (isSelected) {
-                DeselectCandy ();
-            } else {
-                if (oldCandySelected == null) {
-                    SelectCandy ();
-                } else {
-                    if (CanSwipe (oldCandySelected)) {
-                        SwapSprinte (oldCandySelected);
-                        oldCandySelected.FindallMatche ();
-                        FindallMatche ();
-                        oldCandySelected.DeselectCandy ();
+            if (isSelected)
+            {
+                DeselectCandy();
+            }
+            else
+            {
+                if (oldCandySelected == null)
+                {
+                    SelectCandy();
+                }
+                else
+                {
+                    if (CanSwipe(oldCandySelected))
+                    {
+                        SwapSprinte(oldCandySelected);
+                        oldCandySelected.FindallMatche();
+                        FindallMatche();
+                        oldCandySelected.DeselectCandy();
                         ManagerGIU.instance.Moves--;
 
-                    } else {
-                        oldCandySelected.DeselectCandy ();
-                        SelectCandy ();
+                    }
+                    else
+                    {
+                        oldCandySelected.DeselectCandy();
+                        SelectCandy();
                     }
 
                 }
@@ -62,13 +78,15 @@ public class Candy : MonoBehaviour {
 
     }
 
-    private void SwapSprinte (Candy newCandy) {
+    private void SwapSprinte(Candy newCandy)
+    {
         /*  if(spriteRenderer.sprite == 
             newCandy.GetComponent<SpriteRenderer>().sprite) {
             return;
         } */
 
-        if (spriteRenderer.sprite != newCandy.spriteRenderer.sprite) {
+        if (spriteRenderer.sprite != newCandy.spriteRenderer.sprite)
+        {
             Sprite tempoSprite = newCandy.spriteRenderer.sprite;
             RuntimeAnimatorController animatorController = newCandy.animator.runtimeAnimatorController;
             int id = newCandy.id;
@@ -85,88 +103,109 @@ public class Candy : MonoBehaviour {
 
     }
 
-    private GameObject GetNeighbor (Vector2 direction) {
-        RaycastHit2D rayHit = Physics2D.Raycast (this.transform.position, direction);
+    private GameObject GetNeighbor(Vector2 direction)
+    {
+        RaycastHit2D rayHit = Physics2D.Raycast(this.transform.position, direction);
         return rayHit.collider != null ? rayHit.collider.gameObject : null;
     }
 
-    private List<GameObject> GetAllNeighbor () {
-        List<GameObject> result = new List<GameObject> ();
-        foreach (Vector2 v in UpDownLeftRight) {
-            result.Add (GetNeighbor (v));
+    private List<GameObject> GetAllNeighbor()
+    {
+        List<GameObject> result = new List<GameObject>();
+        foreach (Vector2 v in UpDownLeftRight)
+        {
+            result.Add(GetNeighbor(v));
         }
         return result;
     }
 
-    private bool CanSwipe (Candy candy) {
-        return GetAllNeighbor ().Contains (candy.gameObject);
+    private bool CanSwipe(Candy candy)
+    {
+        return GetAllNeighbor().Contains(candy.gameObject);
     }
 
-    private List<GameObject> FindMatch (Vector2 direction, Transform position) {
-        List<GameObject> result = new List<GameObject> ();
+    private List<GameObject> FindMatch(Vector2 direction, Transform position)
+    {
+        List<GameObject> result = new List<GameObject>();
 
-        RaycastHit2D rayHit = Physics2D.Raycast (position.position, direction);
+        RaycastHit2D rayHit = Physics2D.Raycast(position.position, direction);
         while (rayHit.collider != null &&
-            rayHit.collider.GetComponent<Candy> ().id ==
-            id) {
-            result.Add (rayHit.collider.gameObject);
-            rayHit = Physics2D.Raycast (rayHit.collider.transform.position, direction);
+            rayHit.collider.GetComponent<Candy>().id ==
+            id)
+        {
+            result.Add(rayHit.collider.gameObject);
+            rayHit = Physics2D.Raycast(rayHit.collider.transform.position, direction);
 
         }
 
         return result;
     }
 
-    private bool ClearMatch (Vector2[] directions) {
-        HashSet<GameObject> matchCandies = new HashSet<GameObject> ();
-        List<GameObject> temporalMatchCandies = new List<GameObject> ();
-        List<GameObject> temporal = new List<GameObject> ();
+    private bool ClearMatch(Vector2[] directions)
+    {
+        HashSet<GameObject> matchCandies = new HashSet<GameObject>();
+        List<GameObject> temporalMatchCandies = new List<GameObject>();
+        List<GameObject> temporal = new List<GameObject>();
 
-        foreach (Vector2 direction in directions) {
-            temporalMatchCandies.AddRange (FindMatch (direction, this.GetComponent<Transform> ()));
+        foreach (Vector2 direction in directions)
+        {
+            temporalMatchCandies.AddRange(FindMatch(direction, this.GetComponent<Transform>()));
         }
-        matchCandies.UnionWith (temporalMatchCandies);
+        matchCandies.UnionWith(temporalMatchCandies);
 
-        foreach (GameObject gameObject in temporalMatchCandies) {
-            foreach (Vector2 direction in directions) {
-                temporal.AddRange (FindMatch (direction, gameObject.GetComponent<Transform> ()));
+        foreach (GameObject gameObject in temporalMatchCandies)
+        {
+            foreach (Vector2 direction in directions)
+            {
+                temporal.AddRange(FindMatch(direction, gameObject.GetComponent<Transform>()));
             }
         }
         temporalMatchCandies = temporal;
-        temporal = new List<GameObject> ();
-        matchCandies.UnionWith (temporalMatchCandies);
-        if (matchCandies.Count >= ManagerCandies.minToMach) {
+        temporal = new List<GameObject>();
 
-            this.GetComponent<Animator> ().SetBool ("destroy", true);
-            foreach (GameObject candy in matchCandies) {
-                candy.GetComponent<Animator> ().SetBool ("destroy", true);
+        matchCandies.Add(this.gameObject);
+        matchCandies.UnionWith(temporalMatchCandies);
+
+        if (matchCandies.Count >= ManagerCandies.minToMach)
+        {
+            /* this.GetComponent<Animator> ().SetBool ("destroy", true); */
+            foreach (GameObject candy in matchCandies)
+            {
+                candy.GetComponent<Animator>().SetBool("destroy", true);
             }
             return true;
 
-        } else {
+        }
+        else
+        {
             return false;
 
         }
 
     }
 
-    public void FindallMatche () {
+    public void FindallMatche()
+    {
 
-        if (this.animator.GetBool ("destroy")) {
+        if (this.animator.GetBool("destroy"))
+        {
             return;
 
         }
-        bool verticalMatch = ClearMatch (new Vector2[] { Vector2.up, Vector2.down, Vector2.right, Vector2.left });
+        bool verticalMatch = ClearMatch(new Vector2[] { Vector2.up, Vector2.down, Vector2.right, Vector2.left });
 
-        if (verticalMatch) {
-            Invoke ("starFindNullCandies", 1.6f);
+        if (verticalMatch)
+        {
+            /* this.GetComponent<Animator>().SetBool("destroy", true); */
+            Invoke("starFindNullCandies", 2.6f);
 
         }
     }
 
-    public void starFindNullCandies () {
-        StopCoroutine (ManagerCandies.instance.FindNullCandi ());
-        StartCoroutine (ManagerCandies.instance.FindNullCandi ());
+    public void starFindNullCandies()
+    {
+        StopCoroutine(ManagerCandies.instance.FindNullCandi());
+        StartCoroutine(ManagerCandies.instance.FindNullCandi());
     }
 
 }
