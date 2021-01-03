@@ -136,7 +136,7 @@ public class Candy : MonoBehaviour {
         temporal = new List<GameObject> ();
         matchCandies.UnionWith (temporalMatchCandies);
         if (matchCandies.Count >= ManagerCandies.minToMach) {
-        Debug.Log (matchCandies.Count);
+
             this.GetComponent<Animator> ().SetBool ("destroy", true);
             foreach (GameObject candy in matchCandies) {
                 candy.GetComponent<Animator> ().SetBool ("destroy", true);
