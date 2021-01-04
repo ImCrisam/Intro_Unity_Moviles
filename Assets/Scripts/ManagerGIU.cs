@@ -88,11 +88,22 @@ public class ManagerGIU : MonoBehaviour
 
     public void newGame()
     {
-        ManagerCandies.instance.newGame();
+        ManagerCandies.instance.destroyGame();
         inGameOver.enabled = false;
         inGame.enabled = true;
         play.enabled = false;
         inPlay = true;
+        Moves = 9;
+        Score = 0;
+    }
+
+    public void backGame()
+    {
+        /* ManagerCandies.instance.newGame(); */
+        inGameOver.enabled = false;
+        inGame.enabled = false;
+        play.enabled = true;
+        inPlay = false;
         Moves = 9;
         Score = 0;
     }
