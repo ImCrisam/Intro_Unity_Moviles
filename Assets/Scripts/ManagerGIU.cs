@@ -26,7 +26,7 @@ public class ManagerGIU : MonoBehaviour
             moves = value;
             if (moves >= 0)
             {
-                movesText.text = "Moves: " + moves;
+                movesText.text = moves + "";
 
             }
             else
@@ -42,7 +42,7 @@ public class ManagerGIU : MonoBehaviour
         inPlay = false;
         yield return new WaitUntil(() => !ManagerCandies.instance.isShifting);
         yield return new WaitForSeconds(2.1f);
-        inGameOver.GetComponentInChildren<Text>().text = "Score:" + score;
+        inGameOver.GetComponentInChildren<Text>().text = "Score: " + score;
         inGameOver.enabled = true;
         inGame.enabled = false;
         play.enabled = false;
@@ -57,14 +57,14 @@ public class ManagerGIU : MonoBehaviour
         set
         {
             score = value;
-            ScoreText.text = "Score:" + score;
+            ScoreText.text = "" + score;
         }
     }
 
     void Start()
     {
         initCanvas();
-        movesText.text = "Moves: " + moves;
+        movesText.text = "" + moves;
 
         if (instance == null)
         {
@@ -124,6 +124,11 @@ public class ManagerGIU : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void buttonMusica()
+    {
+
     }
 
 }
