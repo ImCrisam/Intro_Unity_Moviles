@@ -169,7 +169,7 @@ public class Candy : MonoBehaviour
         if (matchCandies.Count >= ManagerCandies.minToMach)
         {
 
-            /* this.GetComponent<Animator> ().SetBool ("destroy", true); */
+            ManagerGIU.instance.toMatch.Play();
             foreach (GameObject candy in matchCandies)
             {
                 candy.GetComponent<Animator>().SetBool("destroy", true);

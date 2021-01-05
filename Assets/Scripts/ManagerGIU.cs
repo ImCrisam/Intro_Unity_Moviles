@@ -13,6 +13,7 @@ public class ManagerGIU : MonoBehaviour
     public Canvas inGameOver;
     public Slider sliderMath;
     public AudioSource music;
+    public AudioSource toMatch;
     [SerializeField] private Text movesText;
     private int moves;
 
@@ -132,14 +133,17 @@ public class ManagerGIU : MonoBehaviour
         if (music.volume > 0.3f)
         {
             music.volume = 0.3f;
+            toMatch.volume = 0.4f;
         }
         else if (music.volume <= 0.1f)
         {
             music.volume = 0.8f;
+            toMatch.volume = 0.9f;
         }
         else
         {
             music.volume = 0;
+            toMatch.volume = 0.1f;
         }
     }
 
