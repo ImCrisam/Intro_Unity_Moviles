@@ -8,8 +8,8 @@ public class ManagerCandies : MonoBehaviour
     public List<GameObject> listPreFabs = new List<GameObject>();
     public GameObject currentCandy;
     public int col, row;
-    public const int minToMach = 3;
-    private GameObject[,] candies;
+    public static int minToMach = 3;
+    [SerializeField] private GameObject[,] candies;
     public bool isShifting { get; set; }
 
     private Candy candySelected;
@@ -27,7 +27,6 @@ public class ManagerCandies : MonoBehaviour
     }
     public void newGame()
     {
-
         destroyGame();
         Vector2 offSet = currentCandy.GetComponent<BoxCollider2D>().size;
         init(offSet);

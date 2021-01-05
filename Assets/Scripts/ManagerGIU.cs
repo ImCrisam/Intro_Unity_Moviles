@@ -11,6 +11,7 @@ public class ManagerGIU : MonoBehaviour
     public Canvas inGame;
     public Canvas play;
     public Canvas inGameOver;
+    public Slider sliderMath;
     [SerializeField] private Text movesText;
     private int moves;
 
@@ -21,7 +22,6 @@ public class ManagerGIU : MonoBehaviour
         get { return moves; }
         set
         {
-            Debug.Log("moves: " + value);
 
             moves = value;
             if (moves >= 0)
@@ -39,12 +39,14 @@ public class ManagerGIU : MonoBehaviour
 
     private IEnumerator GameOver()
     {
+        inPlay = false;
         yield return new WaitUntil(() => !ManagerCandies.instance.isShifting);
         yield return new WaitForSeconds(2.1f);
         inGameOver.GetComponentInChildren<Text>().text = "Score:" + score;
         inGameOver.enabled = true;
         inGame.enabled = false;
         play.enabled = false;
+
     }
 
     [SerializeField] private Text ScoreText;
@@ -86,9 +88,16 @@ public class ManagerGIU : MonoBehaviour
 
     }
 
+
     public void newGame()
     {
-        ManagerCandies.instance.destroyGame();
+        ManagerCandies.minToMach = (int)sliderMath.value;
+        reset();
+    }
+
+    public void reset()
+    {
+        ManagerCandies.instance.newGame();
         inGameOver.enabled = false;
         inGame.enabled = true;
         play.enabled = false;
@@ -99,7 +108,7 @@ public class ManagerGIU : MonoBehaviour
 
     public void backGame()
     {
-        /* ManagerCandies.instance.newGame(); */
+        ManagerCandies.instance.destroyGame();
         inGameOver.enabled = false;
         inGame.enabled = false;
         play.enabled = true;
