@@ -1823,7 +1823,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6266aab03c65c194582bc92e09f25fb7, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -3023,6 +3023,7 @@ MonoBehaviour:
   play: {fileID: 618908511}
   inGameOver: {fileID: 657021252}
   sliderMath: {fileID: 1699797484}
+  music: {fileID: 519420030}
   movesText: {fileID: 1888803090}
   inPlay: 0
   ScoreText: {fileID: 392580407}
