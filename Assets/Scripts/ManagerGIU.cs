@@ -89,11 +89,24 @@ public class ManagerGIU : MonoBehaviour
         Score = 0;
 
     }
-
-
-    public void newGame()
+    public void easy()
     {
-        ManagerCandies.minToMach = (int)sliderMath.value;
+        newGame(3);
+    }
+    public void normal()
+    {
+        newGame(4);
+
+    }
+    public void hard()
+    {
+        newGame(5);
+
+    }
+
+    private void newGame(int minMach)
+    {
+        ManagerCandies.minToMach = minMach;
         reset();
     }
 
